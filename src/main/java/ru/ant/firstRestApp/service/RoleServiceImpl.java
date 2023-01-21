@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ant.firstRestApp.model.Role;
 import ru.ant.firstRestApp.repository.RoleRepository;
+import ru.ant.firstRestApp.service.RoleService;
+
 
 import java.util.List;
 

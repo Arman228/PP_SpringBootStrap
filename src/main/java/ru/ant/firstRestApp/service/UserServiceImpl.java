@@ -11,8 +11,12 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ant.firstRestApp.model.Role;
 import ru.ant.firstRestApp.model.User;
+import ru.ant.firstRestApp.repository.RoleRepository;
 import ru.ant.firstRestApp.repository.UserRepository;
+import ru.ant.firstRestApp.service.UserService;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,11 +27,14 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
+    private final RoleRepository roleRepository;
+
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -38,30 +45,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User createUser(User user) {
+    public void createUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        return user;
     }
 
     @Override
     @Transactional
     public void deleteUser(Integer id) {
-        userRepository.deleteById(id);
+        userRepository.delete(userRepository.findById(id).get());
     }
 
     @Override
     @Transactional
     public void updateUser(Integer id, User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        User userToBeUpdate = showUser(id);
-        userToBeUpdate.setUsername(user.getUsername());
-        userToBeUpdate.setPassword(user.getPassword());
-        userToBeUpdate.setFirstName(user.getFirstName());
-        userToBeUpdate.setLastName(user.getLastName());
-        userToBeUpdate.setAge(user.getAge());
-        userToBeUpdate.setRole(user.getRoles());
-        userRepository.save(userToBeUpdate);
+        user.setUsername(user.getUsername());
+        user.setPassword(user.getPassword());
+        user.setFirstName(user.getFirstName());
+        user.setLastName(user.getLastName());
+        user.setAge(user.getAge());
+        user.setRole(user.getRoles());
+        userRepository.save(user);
     }
 
     @Override

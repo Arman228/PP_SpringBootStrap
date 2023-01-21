@@ -1,5 +1,6 @@
 package ru.ant.firstRestApp.service;
 
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ public interface UserService extends UserDetailsService {
 
     List<User> getAllUsers();
 
-    User createUser(User user);
+    void createUser(User user);
 
     void deleteUser(Integer id);
 

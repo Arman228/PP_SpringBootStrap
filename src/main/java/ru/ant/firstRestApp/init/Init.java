@@ -8,21 +8,24 @@ import ru.ant.firstRestApp.model.User;
 import ru.ant.firstRestApp.service.RoleService;
 import ru.ant.firstRestApp.service.UserService;
 
+import javax.annotation.PostConstruct;
+import java.util.*;
+
 @Component
-public class CommandLineRunnerImpl implements CommandLineRunner {
+public class Init {
 
     private final UserService userService;
 
     private final RoleService roleService;
 
     @Autowired
-    public CommandLineRunnerImpl(UserService userService, RoleService roleService) {
+    public Init(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
     }
 
-    @Override
-    public void run(String... args) {
+    @PostConstruct
+    public void run() {
         Role roleAdmin = new Role();
         roleAdmin.setRoleName("ROLE_ADMIN");
         roleAdmin.setId(1);
@@ -39,7 +42,7 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
         admin.setFirstName("Admin");
         admin.setLastName("Admin");
         admin.setAge(18);
-        admin.setRoles(new String[]{"ROLE_ADMIN", "ROLE_USER"});
+        admin.setRoles(Collections.singletonList(roleAdmin));
         userService.createUser(admin);
 
         User user = new User();
@@ -48,9 +51,11 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
         user.setFirstName("User");
         user.setLastName("User");
         user.setAge(24);
-        user.setRoles(new String[]{"ROLE_USER"});
+        user.setRoles(Collections.singletonList(roleUser));
         userService.createUser(user);
+
     }
 }
+
 
 
